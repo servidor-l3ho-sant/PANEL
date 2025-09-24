@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import time
 from typing import Dict, List, Optional
 from utils import show_success, show_error, show_info, log_action
 
@@ -12,12 +13,12 @@ class GitHubManager:
         self.access_token = None
         self.connection_settings = None
         
-    async def get_access_token(self) -> Optional[str]:
+    def get_access_token(self) -> Optional[str]:
         """Obtiene el token de acceso de GitHub"""
         try:
             if (self.connection_settings and 
                 self.connection_settings.get('settings', {}).get('expires_at') and
-                self.connection_settings['settings']['expires_at'] > os.time()):
+                self.connection_settings['settings']['expires_at'] > time.time()):
                 return self.connection_settings['settings']['access_token']
             
             hostname = os.environ.get('REPLIT_CONNECTORS_HOSTNAME')

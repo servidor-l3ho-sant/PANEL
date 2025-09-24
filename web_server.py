@@ -169,7 +169,7 @@ class APKEditorWebApp:
         def github_repos():
             """Lista repositorios de GitHub"""
             try:
-                token = asyncio.run(self.github_manager.get_access_token())
+                token = self.github_manager.get_access_token()
                 if not token:
                     return jsonify({'error': 'GitHub no conectado'})
                     
