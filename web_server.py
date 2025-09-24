@@ -15,7 +15,9 @@ class APKEditorWebApp:
     
     def __init__(self):
         self.app = Flask(__name__)
-        self.app.secret_key = os.environ.get('SESSION_SECRET', 'apk-editor-secret-key')
+        self.app.secret_key = os.environ.get('SESSION_SECRET')
+        if not self.app.secret_key:
+            raise ValueError("SESSION_SECRET environment variable is required")
         
         # Inicializar componentes
         self.file_manager = APKFileManager()
@@ -32,7 +34,12 @@ class APKEditorWebApp:
         
         @self.app.route('/')
         def index():
-            """Página principal con interfaz creativa"""
+            """Página principal con interfaz estilo Replit"""
+            return render_template('replit_style.html')
+        
+        @self.app.route('/classic')
+        def classic():
+            """Interfaz clásica original"""
             return render_template('index.html')
         
         @self.app.route('/api/status')
@@ -246,6 +253,92 @@ class APKEditorWebApp:
                 return jsonify({'backups': backups})
             except Exception as e:
                 return jsonify({'error': str(e)})
+        
+        @self.app.route('/api/ai-chat', methods=['POST'])
+        def ai_chat():
+            """Chat inteligente con Gemini IA"""
+            try:
+                data = request.json
+                message = data.get('message', '')
+                context = data.get('context', '')
+                filename = data.get('filename', '')
+                
+                if not self.ai_assistant.is_available():
+                    return jsonify({
+                        'success': False, 
+                        'message': 'IA no disponible. Verifica tu clave API de Gemini.'
+                    })
+                
+                # Crear prompt contextual para Android development
+                system_prompt = """
+                Eres un experto desarrollador Android y asistente de IA especializado en:
+                - Análisis y optimización de layouts XML
+                - Desarrollo de aplicaciones Android
+                - Mejores prácticas de UI/UX móvil
+                - Debugging y resolución de problemas
+                - Generación de código Android limpio y eficiente
+                
+                Responde de manera concisa, práctica y útil. Si ves código, analízalo y ofrece mejoras específicas.
+                """
+                
+                if context and filename:
+                    full_prompt = f"{system_prompt}\n\nArchivo actual: {filename}\n\nCódigo:\n```xml\n{context}\n```\n\nPregunta del usuario: {message}"
+                else:
+                    full_prompt = f"{system_prompt}\n\nPregunta del usuario: {message}"
+                
+                # Usar el asistente existente pero con mejor contexto
+                response = self.ai_assistant.chat_with_context(full_prompt, filename)
+                
+                return jsonify({
+                    'success': True,
+                    'response': response.get('response', 'No pude procesar tu pregunta. Inténtalo de nuevo.')
+                })
+                
+            except Exception as e:
+                return jsonify({
+                    'success': False,
+                    'message': f'Error en el chat: {str(e)}'
+                })
+        
+        @self.app.route('/api/ai-stream-chat', methods=['POST'])
+        def ai_stream_chat():
+            """Chat con streaming en tiempo real"""
+            def generate():
+                try:
+                    data = request.json
+                    message = data.get('message', '')
+                    context = data.get('context', '')
+                    filename = data.get('filename', '')
+                    
+                    if not self.ai_assistant.is_available():
+                        yield f"data: {{\"error\": \"IA no disponible\"}}\n\n"
+                        return
+                    
+                    # Stream the response word by word
+                    response = self.ai_assistant.chat_with_context(
+                        f"Usuario: {message}\n\nContexto del archivo {filename}: {context[:1000]}", 
+                        filename
+                    )
+                    
+                    words = response.get('analysis', '').split()
+                    for word in words:
+                        yield f"data: {{\"word\": \"{word} \"}}\n\n"
+                        import time
+                        time.sleep(0.05)  # Small delay for streaming effect
+                    
+                    yield f"data: {{\"done\": true}}\n\n"
+                    
+                except Exception as e:
+                    yield f"data: {{\"error\": \"{str(e)}\"}}\n\n"
+            
+            return self.app.response_class(
+                generate(),
+                mimetype='text/event-stream',
+                headers={
+                    'Cache-Control': 'no-cache',
+                    'Connection': 'keep-alive'
+                }
+            )
     
     def run(self, host='0.0.0.0', port=5000, debug=False):
         """Ejecuta el servidor web"""

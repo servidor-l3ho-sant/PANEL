@@ -328,3 +328,28 @@ class GeminiAndroidAssistant:
             "Incluye información sobre el tema visual de tu app",
             "Menciona si necesitas compatibilidad con versiones específicas de Android"
         ]
+    
+    def chat_with_context(self, prompt: str, filename: str = "") -> Dict:
+        """Chat inteligente con contexto del proyecto Android"""
+        if not self.is_available():
+            return {"error": "API de Gemini no disponible"}
+            
+        # Sistema de prompt especializado para Android
+        system_prompt = f"""
+        Eres un experto desarrollador Android especializado en:
+        - Análisis y optimización de layouts XML
+        - Desarrollo de aplicaciones móviles
+        - UI/UX para Android
+        - Debugging y resolución de problemas
+        - Mejores prácticas de Android
+        - Generación de código limpio y eficiente
+        
+        Responde de manera clara, concisa y práctica. Proporciona ejemplos de código cuando sea útil.
+        Si el usuario muestra código XML, analízalo cuidadosamente y ofrece mejoras específicas.
+        
+        Contexto del archivo actual: {filename}
+        """
+        
+        full_prompt = f"{system_prompt}\n\n{prompt}"
+        
+        return self._make_request(full_prompt, "chat_context", {"filename": filename})
