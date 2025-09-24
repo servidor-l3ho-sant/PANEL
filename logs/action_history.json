@@ -21,5 +21,18 @@
     "timestamp": "2025-09-24T19:36:33.996652",
     "action": "app_start",
     "details": {}
+  },
+  {
+    "timestamp": "2025-09-24T21:02:36.673102",
+    "action": "web_server_start",
+    "details": {
+      "host": "0.0.0.0",
+      "port": 5000
+    }
+  },
+  {
+    "timestamp": "2025-09-24T21:02:38.658009",
+    "action": "app_start",
+    "details": {}
   }
 ]
