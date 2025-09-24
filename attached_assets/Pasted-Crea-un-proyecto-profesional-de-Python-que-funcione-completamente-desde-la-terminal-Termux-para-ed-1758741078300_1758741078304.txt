@@ -1,0 +1,50 @@
+Crea un proyecto profesional de Python que funcione completamente desde la terminal (Termux) para editar aplicaciones Android descompiladas con apktool. El proyecto debe incluir IA usando la API de Gemini y tener un menú interactivo profesional.  
+
+**Requisitos detallados:**
+
+1. **Integración con la API de Gemini**
+   - Permitir enviar prompts para que la IA sugiera cambios en archivos XML, layouts, Compose, styles, colores y recursos.  
+   - Debe mostrar la respuesta de la IA en la terminal de forma clara y permitir aplicar los cambios automáticamente o manualmente.  
+
+2. **Gestión de archivos locales**
+   - Listar archivos de la carpeta de APK descompilada (`res/layout`, `res/values`, `res/drawable`).  
+   - Abrir, editar, guardar y hacer backup de cualquier archivo.  
+   - Historial de cambios con opción de revertir a versiones previas.  
+
+3. **Detección y corrección de errores**
+   - Validar XML/Compose: tags mal cerrados, referencias a strings o recursos faltantes, errores de sintaxis.  
+   - Usar IA para sugerir correcciones automáticas o guías de arreglo.  
+
+4. **Reconstrucción y firma**
+   - Comandos rápidos para reconstruir APK (`apktool b`) desde la terminal.  
+   - Opción de firmar APK usando un keystore (solo instrucción, no clave real incluida).  
+   - Mensajes claros de éxito o error en cada paso.  
+
+5. **Funciones extra profesionales**
+   - Generación de layouts/templates sugeridos por IA.  
+   - Visualización de estructura de layouts en árbol de texto.  
+   - Logs de todas las acciones (cambios, errores, prompts enviados).  
+   - Colores y formato en terminal para mejorar legibilidad (usar `rich` o similar).  
+
+6. **Interfaz de terminal**
+   - Menú interactivo con opciones: listar archivos, editar, aplicar IA, validar, reconstruir, ver historial, generar templates, salir.  
+   - Ayuda rápida de cada comando disponible desde el menú.  
+
+7. **Compatibilidad y documentación**
+   - Funciona en Termux con Python 3.10+.  
+   - Comentarios claros en cada archivo y función explicando su propósito.  
+   - Instrucciones de instalación, dependencias (`requests`, `rich`, etc.), uso y ejemplos de prompts para IA.  
+
+**Estructura sugerida del proyecto:**
+- `main.py` → menú principal y loop de terminal.  
+- `api_gemini.py` → funciones para interactuar con la API de Gemini y aplicar cambios sugeridos.  
+- `file_manager.py` → lectura, edición, backup, restauración e historial de archivos.  
+- `validator.py` → validación de XML/Compose y detección de errores.  
+- `templates.py` → generación de layouts/templates sugeridos por IA.  
+- `utils.py` → funciones auxiliares: logs, colores, helpers de terminal.  
+
+Genera el proyecto **completo**, con:
+- Menú interactivo funcional.  
+- Ejemplos de prompts y respuestas de IA.  
+- Comentarios claros en todas las funciones.  
+- Capacidad de editar, validar, aplicar IA, reconstruir APK y guardar historial desde la terminal.
