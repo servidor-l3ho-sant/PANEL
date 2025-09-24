@@ -17,15 +17,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "APK Editor Pro"
+args = "APK Editor Web Server"
 
 [[workflows.workflow]]
-name = "APK Editor Pro"
+name = "APK Editor Web Server"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python app.py"
+args = "python app.py --web"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
@@ -33,11 +33,7 @@ outputType = "webview"
 
 [[ports]]
 localPort = 5000
-externalPort = 5000
-
-[[ports]]
-localPort = 34799
-externalPort = 3000
+externalPort = 80
 
 [[ports]]
 localPort = 44181
